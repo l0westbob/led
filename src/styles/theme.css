@@ -1,0 +1,13 @@
+:root {
+  color-scheme: dark;
+  --bg: #0f1720;
+  --bg-elevated: #182330;
+  --bg-soft: rgba(24, 35, 48, 0.82);
+  --panel: rgba(17, 24, 39, 0.92);
+  --line: rgba(147, 197, 253, 0.16);
+  --line-strong: rgba(125, 211, 252, 0.32);
+  --text: #ecf6ff;
+  --muted: #9bb0c4;
+  --accent-strong: #d9ff70;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+}
