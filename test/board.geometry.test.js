@@ -5,7 +5,7 @@ import {
   getRotatedBoardFootprintMm,
   normalizeQuarterTurnRotation,
   rotateEmittersWithBoard,
-} from "../src/domain/boardGeometry.js";
+} from "../src/domain/boardGeometry";
 
 test("normalizeQuarterTurnRotation normalizes arbitrary degrees", () => {
   assert.equal(normalizeQuarterTurnRotation(0), 0);
@@ -20,7 +20,11 @@ test("getRotatedBoardFootprint swaps axes for 90/270°", () => {
     { widthMm: 285, depthMm: 440 },
   );
   assert.deepEqual(
-    getRotatedBoardFootprintCm({ widthMm: 440, depthMm: 285, rotationDeg: 270 }),
+    getRotatedBoardFootprintCm({
+      widthMm: 440,
+      depthMm: 285,
+      rotationDeg: 270,
+    }),
     { widthCm: 28.5, depthCm: 44 },
   );
 });

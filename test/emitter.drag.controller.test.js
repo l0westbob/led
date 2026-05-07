@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createEmitterDragController } from "../src/components/useEmitterDrag.js";
+import { createEmitterDragController } from "../src/components/useEmitterDrag";
 
 function pointerEventStub(overrides = {}) {
   return {
@@ -62,4 +62,3 @@ test("emitter drag controller starts drag after threshold crossing", () => {
 
   assert.deepEqual(calls, ["start", "preview", "commit"]);
 });
-

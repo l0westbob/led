@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from "vue";
 import { usePlannerContext } from "@/stores/plannerContext";
 
@@ -21,8 +21,9 @@ const hasResults = computed(() => store.benchmarkRows.length > 0);
     </div>
 
     <p class="note">
-      Benchmark runs the default PPFD estimator for 1, 2, 4, and 8 boards using
-      the current room size and slice resolution (3 rounds each).
+      Benchmark runs fast-preview and reference PPFD engines for 1, 2, 4, and 8
+      boards using the current room size and slice resolution (3 rounds each).
+      Error metrics are reported as Fast vs Reference.
     </p>
 
     <table v-if="hasResults" class="benchmark-table">
@@ -32,6 +33,9 @@ const hasResults = computed(() => store.benchmarkRows.length > 0);
           <th>Emitters</th>
           <th>Grid Cells</th>
           <th>Avg Time</th>
+          <th>MAE</th>
+          <th>P95 Err</th>
+          <th>Max Err</th>
         </tr>
       </thead>
       <tbody>
@@ -40,6 +44,9 @@ const hasResults = computed(() => store.benchmarkRows.length > 0);
           <td>{{ row.emitterCount }}</td>
           <td>{{ row.cellCount }}</td>
           <td>{{ row.averageMs.toFixed(2) }} ms</td>
+          <td>{{ row.mae == null ? "—" : row.mae.toFixed(2) }}</td>
+          <td>{{ row.p95Error == null ? "—" : row.p95Error.toFixed(2) }}</td>
+          <td>{{ row.maxError == null ? "—" : row.maxError.toFixed(2) }}</td>
         </tr>
       </tbody>
     </table>

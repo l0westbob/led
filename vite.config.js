@@ -7,6 +7,17 @@ import vue from "@vitejs/plugin-vue";
  */
 export default defineConfig({
   plugins: [vue()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("/src/domain/spectral/all_series.json")) {
+            return "spectral-series";
+          }
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": "/src",

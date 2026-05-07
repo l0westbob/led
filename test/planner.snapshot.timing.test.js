@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { buildPlannerSnapshot } from "../src/application/planner/buildPlannerSnapshot.js";
+import { buildPlannerSnapshot } from "../src/application/planner/buildPlannerSnapshot";
 
 function createBoardFormState() {
   return {
@@ -61,6 +61,16 @@ function createBoardInstance() {
   };
 }
 
+function createSteppedTimer(stepMs) {
+  let currentMs = 0;
+  return {
+    nowMs() {
+      currentMs += stepMs;
+      return currentMs;
+    },
+  };
+}
+
 test("buildPlannerSnapshot exposes deterministic stage timing payload", () => {
   const snapshot = buildPlannerSnapshot({
     board: createBoardFormState(),
@@ -72,4 +82,20 @@ test("buildPlannerSnapshot exposes deterministic stage timing payload", () => {
   assert.ok(Number.isFinite(snapshot.summary.stageTimingMs.electrical));
   assert.ok(Number.isFinite(snapshot.summary.stageTimingMs.photon));
   assert.ok(Number.isFinite(snapshot.summary.stageTimingMs.ppfd));
+});
+
+test("buildPlannerSnapshot accepts an injected timer for deterministic timing", () => {
+  const snapshot = buildPlannerSnapshot({
+    board: createBoardFormState(),
+    boardInstances: [createBoardInstance()],
+    resolutionCm: 5,
+    timer: createSteppedTimer(5),
+  });
+
+  assert.deepEqual(snapshot.summary.stageTimingMs, {
+    electrical: 5,
+    photon: 5,
+    ppfd: 5,
+  });
+  assert.equal(snapshot.summary.calculationMs, 35);
 });

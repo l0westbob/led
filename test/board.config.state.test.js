@@ -4,7 +4,7 @@ import {
   createBoardConfigDraft,
   resolveBoardConfigDraft,
   resolveDraftPreserveField,
-} from "../src/application/planner/boardConfigState.js";
+} from "../src/application/planner/boardConfigState";
 
 function createBoardInstance() {
   return {

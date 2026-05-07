@@ -1,3 +1,8 @@
 .idea
 node_modules
 dist
+coverage
+.vite
+.eslintcache
+playwright-report
+test-results

@@ -2,6 +2,7 @@ import js from "@eslint/js";
 import prettierConfig from "eslint-config-prettier";
 import pluginVue from "eslint-plugin-vue";
 import globals from "globals";
+import tseslint from "typescript-eslint";
 
 /**
  * Flat ESLint configuration for the planner.
@@ -12,9 +13,10 @@ export default [
     ignores: ["dist/**", "node_modules/**"],
   },
   js.configs.recommended,
+  ...tseslint.configs.recommended,
   ...pluginVue.configs["flat/recommended"],
   {
-    files: ["**/*.{js,mjs,vue}"],
+    files: ["**/*.{js,mjs,ts,vue}"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
@@ -23,7 +25,14 @@ export default [
       },
     },
     rules: {
-      "no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+      "no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
       "no-undef": "error",
       "vue/max-attributes-per-line": [
         "error",
@@ -38,6 +47,22 @@ export default [
           ignores: ["App"],
         },
       ],
+    },
+  },
+  {
+    files: ["**/*.vue"],
+    languageOptions: {
+      parserOptions: {
+        parser: tseslint.parser,
+        extraFileExtensions: [".vue"],
+      },
+    },
+  },
+  {
+    files: ["**/*.{ts,vue}"],
+    rules: {
+      "no-unused-vars": "off",
+      "no-undef": "off",
     },
   },
   prettierConfig,

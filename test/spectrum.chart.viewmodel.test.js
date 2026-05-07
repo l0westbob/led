@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { buildSpectrumChartViewModel } from "../src/application/ledLab/buildSpectrumChartViewModel.js";
+import { buildSpectrumChartViewModel } from "../src/application/ledLab/buildSpectrumChartViewModel";
 
 test("buildSpectrumChartViewModel builds relative axis and path", () => {
   const viewModel = buildSpectrumChartViewModel({
@@ -8,7 +8,12 @@ test("buildSpectrumChartViewModel builds relative axis and path", () => {
     nmMin: 280,
     nmMax: 840,
     series: [
-      { id: "board-spectrum", label: "Board", color: "#56e1ff", y: Array.from({ length: 561 }, () => 0.5) },
+      {
+        id: "board-spectrum",
+        label: "Board",
+        color: "#56e1ff",
+        y: Array.from({ length: 561 }, () => 0.5),
+      },
     ],
   });
 
@@ -24,7 +29,12 @@ test("buildSpectrumChartViewModel builds photon axis", () => {
     nmMin: 280,
     nmMax: 840,
     series: [
-      { id: "led-1", label: "LED 1", color: "#ffaa3c", y: Array.from({ length: 561 }, (_, index) => index / 20) },
+      {
+        id: "led-1",
+        label: "LED 1",
+        color: "#ffaa3c",
+        y: Array.from({ length: 561 }, (_, index) => index / 20),
+      },
     ],
   });
 
@@ -33,3 +43,21 @@ test("buildSpectrumChartViewModel builds photon axis", () => {
   assert.equal(viewModel.yTicks.length, 11);
 });
 
+test("buildSpectrumChartViewModel photon axis scales for non-led series ids", () => {
+  const viewModel = buildSpectrumChartViewModel({
+    mode: "photon",
+    nmMin: 280,
+    nmMax: 282,
+    series: [
+      {
+        id: "board-spectrum",
+        label: "Board",
+        color: "#56e1ff",
+        y: [0, 12.5, 25],
+      },
+    ],
+  });
+
+  assert.equal(viewModel.maxPhotonValue, 25);
+  assert.equal(viewModel.yTicks.at(-1)?.label, "25.000");
+});

@@ -1,0 +1,46 @@
+{
+  "schema": "BoardDefinitionDocumentCollection",
+  "schemaVersion": "1.1",
+  "exportedAtIso": "2026-05-29T00:00:00.000Z",
+  "boardCount": 1,
+  "boards": [
+    {
+      "documentType": "BoardDefinitionDocument",
+      "boardSchemaVersion": "1.1",
+      "simulationContextVersion": "1.1",
+      "definition": {
+        "id": "fixture-board",
+        "name": "Fixture Board",
+        "ledType": "lm301h_cri80_5000k",
+        "widthMm": 440,
+        "depthMm": 285,
+        "ledCount": 308,
+        "columns": 22,
+        "rows": 14,
+        "spacingXMm": 20,
+        "spacingYMm": 18,
+        "seriesCount": 14,
+        "parallelCount": 22
+      },
+      "simulationContext": {
+        "distanceCm": 35,
+        "roomWidthCm": 120,
+        "roomDepthCm": 120,
+        "photoperiodHours": 12,
+        "boardCount": 1,
+        "boardSpacingCm": 20,
+        "fixtureColumns": 1,
+        "fixtureRows": 1,
+        "fixtureSpacingXCm": 20,
+        "fixtureSpacingYCm": 20
+      },
+      "defaultDriveTemplate": {
+        "driveMode": "constantVoltage",
+        "voltageV": 38.6,
+        "currentA": 2,
+        "temperatureC": 50
+      },
+      "emitters": []
+    }
+  ]
+}

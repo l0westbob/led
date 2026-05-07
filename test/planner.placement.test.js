@@ -5,7 +5,7 @@ import {
   findInitialBoardInstancePosition,
   isBoardPlacementValid,
   resolveBoardInstanceFootprintCm,
-} from "../src/application/planner/placementState.js";
+} from "../src/application/planner/placementState";
 
 test("resolveBoardInstanceFootprintCm rotates 90 degrees correctly", () => {
   const result = resolveBoardInstanceFootprintCm({

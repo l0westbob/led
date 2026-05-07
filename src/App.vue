@@ -1,16 +1,22 @@
-<script setup>
-import { computed, proxyRefs, ref } from "vue";
-import PpfdHeatmap from "@/components/PpfdHeatmap.vue";
-import BoardSetupSection from "@/components/BoardSetupSection.vue";
+<script setup lang="ts">
+import { computed, defineAsyncComponent, proxyRefs, ref } from "vue";
 import PerformanceBenchmark from "@/components/PerformanceBenchmark.vue";
-import StatsSnapshot from "@/components/StatsSnapshot.vue";
 import BoardConfigModal from "@/components/BoardConfigModal.vue";
 import EmitterConfigModal from "@/components/EmitterConfigModal.vue";
-import BoardPreviewSection from "@/components/BoardPreviewSection.vue";
-import LedComparisonPage from "@/pages/LedComparisonPage.vue";
-import BoardPlannerPage from "@/pages/BoardPlannerPage.vue";
+import BulkEmitterConfigModal from "@/components/BulkEmitterConfigModal.vue";
+import LampPlannerPage from "@/pages/LampPlannerPage.vue";
 import { providePlannerStore } from "@/stores/plannerContext";
 import { usePlannerStore } from "@/stores/plannerStore";
+
+const BoardPlannerPage = defineAsyncComponent(
+  () => import("@/pages/BoardPlannerPage.vue"),
+);
+const BoardPreviewSection = defineAsyncComponent(
+  () => import("@/components/BoardPreviewSection.vue"),
+);
+const LedComparisonPage = defineAsyncComponent(
+  () => import("@/pages/LedComparisonPage.vue"),
+);
 
 /**
  * Root composition for the planner.
@@ -19,10 +25,6 @@ import { usePlannerStore } from "@/stores/plannerStore";
 const store = proxyRefs(usePlannerStore());
 providePlannerStore(store);
 
-const heatmapCaption = computed(
-  () =>
-    `${store.form.roomWidthCm} x ${store.form.roomDepthCm} cm room at ${store.state.resolutionCm} cm resolution`,
-);
 const resolutionOptions = [
   { label: "1 cm", value: 1 },
   { label: "2 cm", value: 2 },
@@ -31,13 +33,9 @@ const resolutionOptions = [
 
 const activePage = ref("planner");
 const showBenchmark = ref(false);
-const calcTimeLabel = computed(() => `${store.ppfdSummary.calculationMs.toFixed(2)} ms`);
-
-function handleMoveBoard(payload) {
-  if (!payload?.id) return;
-  if (payload.previewOnly) return;
-  store.moveBoardInstance(payload.id, payload.xCm, payload.yCm);
-}
+const calcTimeLabel = computed(
+  () => `${store.ppfdSummary.calculationMs.toFixed(2)} ms`,
+);
 </script>
 
 <template>
@@ -48,6 +46,7 @@ function handleMoveBoard(payload) {
           class="pill"
           :class="{ active: activePage === 'board-planner' }"
           type="button"
+          :aria-pressed="activePage === 'board-planner'"
           @click="activePage = 'board-planner'"
         >
           Board Planner
@@ -56,6 +55,7 @@ function handleMoveBoard(payload) {
           class="pill"
           :class="{ active: activePage === 'planner' }"
           type="button"
+          :aria-pressed="activePage === 'planner'"
           @click="activePage = 'planner'"
         >
           Lamp Planner
@@ -67,6 +67,7 @@ function handleMoveBoard(payload) {
             class="pill"
             :class="{ active: store.state.resolutionCm === option.value }"
             type="button"
+            :aria-pressed="store.state.resolutionCm === option.value"
             @click="store.setResolution(option.value)"
           >
             {{ option.label }}
@@ -80,7 +81,10 @@ function handleMoveBoard(payload) {
         type="button"
         @click="showBenchmark = !showBenchmark"
       >
-        {{ calcTimeLabel }} · {{ showBenchmark ? "Hide Performance Check" : "Show Performance Check" }}
+        {{ calcTimeLabel }} ·
+        {{
+          showBenchmark ? "Hide Performance Check" : "Show Performance Check"
+        }}
       </button>
     </div>
 
@@ -92,74 +96,7 @@ function handleMoveBoard(payload) {
 
   <div class="app-shell">
     <main class="visual-panel full-width-panel">
-      <section v-if="activePage === 'planner'" class="card">
-        <BoardSetupSection />
-      </section>
-
-      <section v-if="activePage === 'planner'" class="card">
-        <div class="field-grid map-header-grid">
-          <label class="field">
-            <span>Distance to Slice (cm)</span>
-            <input
-              v-model.number="store.form.distanceCm"
-              type="number"
-              min="1"
-              max="100"
-              step="1"
-            />
-          </label>
-          <label class="field">
-            <span>Room Width (cm)</span>
-            <input
-              v-model.number="store.form.roomWidthCm"
-              type="number"
-              min="10"
-              step="1"
-            />
-          </label>
-          <label class="field">
-            <span>Room Depth (cm)</span>
-            <input
-              v-model.number="store.form.roomDepthCm"
-              type="number"
-              min="10"
-              step="1"
-            />
-          </label>
-          <label class="field">
-            <span>Photoperiod (h/day)</span>
-            <input
-              v-model.number="store.form.photoperiodHours"
-              type="number"
-              min="0"
-              max="24"
-              step="0.25"
-            />
-          </label>
-        </div>
-      </section>
-
-      <details v-if="activePage === 'planner'" class="card collapsible-card heatmap-card" open>
-        <summary class="section-header collapsible-summary">
-          <h2>PPFD Map Preview</h2>
-          <span class="mono">{{ heatmapCaption }}</span>
-        </summary>
-        <PpfdHeatmap
-          :board="store.board"
-          :summary="store.ppfdSummary"
-          :board-instances="store.boardInstances"
-          :selected-board-instance-id="store.selectedBoardInstanceId"
-          @select-board="store.selectBoardInstance"
-          @move-board="handleMoveBoard"
-        />
-      </details>
-
-      <details v-if="activePage === 'planner'" class="card collapsible-card" open>
-        <summary class="section-header collapsible-summary">
-          <h2>Snapshot</h2>
-        </summary>
-        <StatsSnapshot />
-      </details>
+      <LampPlannerPage v-if="activePage === 'planner'" />
 
       <template v-else>
         <BoardPlannerPage />
@@ -170,6 +107,7 @@ function handleMoveBoard(payload) {
   </div>
   <BoardConfigModal />
   <EmitterConfigModal />
+  <BulkEmitterConfigModal />
 </template>
 
 <style scoped>

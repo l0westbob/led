@@ -4,7 +4,7 @@ import {
   computeSpectralWeighting,
   integrateTrapezoid,
   normalizeToMax,
-} from "../src/domain/spectral/math.js";
+} from "../src/domain/spectral/math";
 
 test("integrateTrapezoid integrates a constant function", () => {
   const x = [0, 1, 2, 3];

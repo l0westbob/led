@@ -6,7 +6,7 @@ import {
   duplicateBoardDefinition,
   listBoardDefinitions,
   updateBoardDefinition,
-} from "../src/application/boardLibrary/boardLibraryService.js";
+} from "../src/application/boardLibrary/boardLibraryService";
 
 function createMemoryStorageAdapter() {
   /** @type {Array<object>} */
@@ -17,6 +17,20 @@ function createMemoryStorageAdapter() {
     },
     saveBoardCollection(_storageKey, boards) {
       values = boards;
+    },
+    peekSavedBoards() {
+      return values;
+    },
+  };
+}
+
+function createFailingSaveStorageAdapter() {
+  return {
+    loadSavedBoards() {
+      return [];
+    },
+    saveBoardCollection() {
+      throw new Error("quota exceeded");
     },
   };
 }
@@ -63,9 +77,24 @@ test("board library create/update/delete flow works for custom entries", () => {
   });
   assert.equal(createResult.ok, true);
   assert.ok(createResult.data?.id);
+  assert.equal(createResult.contractVersion, "1.1");
+  assert.equal(createResult.warnings.length, 0);
+  assert.equal(createResult.errors.length, 0);
 
-  const libraryAfterCreate = listBoardDefinitions({ storageKey, storageAdapter });
-  const createdBoard = libraryAfterCreate.find((entry) => entry.id === createResult.data.id);
+  const persistedCollection = storageAdapter.peekSavedBoards();
+  assert.ok(Array.isArray(persistedCollection));
+  assert.equal(persistedCollection.length, 1);
+  assert.equal(persistedCollection[0]?.documentType, "BoardDefinitionDocument");
+  assert.equal(persistedCollection[0]?.boardSchemaVersion, "1.1");
+  assert.equal(persistedCollection[0]?.simulationContextVersion, "1.1");
+
+  const libraryAfterCreate = listBoardDefinitions({
+    storageKey,
+    storageAdapter,
+  });
+  const createdBoard = libraryAfterCreate.find(
+    (entry) => entry.id === createResult.data.id,
+  );
   assert.ok(createdBoard);
   assert.equal(createdBoard.isPreset, false);
 
@@ -77,6 +106,7 @@ test("board library create/update/delete flow works for custom entries", () => {
   });
   assert.equal(updateResult.ok, true);
   assert.equal(updateResult.data?.name, "Updated Name");
+  assert.equal(updateResult.contractVersion, "1.1");
 
   const duplicateResult = duplicateBoardDefinition({
     storageKey,
@@ -85,6 +115,7 @@ test("board library create/update/delete flow works for custom entries", () => {
   });
   assert.equal(duplicateResult.ok, true);
   assert.notEqual(duplicateResult.data?.id, updateResult.data?.id);
+  assert.equal(duplicateResult.contractVersion, "1.1");
 
   const deleteResult = deleteBoardDefinition({
     storageKey,
@@ -92,4 +123,17 @@ test("board library create/update/delete flow works for custom entries", () => {
     boardId: createResult.data.id,
   });
   assert.equal(deleteResult.ok, true);
+  assert.equal(deleteResult.contractVersion, "1.1");
+});
+
+test("board library create reports storage write failures", () => {
+  const createResult = createBoardDefinition({
+    storageKey: "test.failing.boards",
+    storageAdapter: createFailingSaveStorageAdapter(),
+    draft: buildDraft(),
+  });
+
+  assert.equal(createResult.ok, false);
+  assert.equal(createResult.errors[0]?.code, "BOARD_STORAGE_WRITE_FAILED");
+  assert.match(createResult.errors[0]?.message, /quota exceeded/);
 });

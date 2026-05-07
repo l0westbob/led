@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { usePlannerContext } from "@/stores/plannerContext";
 
 /**
@@ -6,6 +6,10 @@ import { usePlannerContext } from "@/stores/plannerContext";
  * more directly than the later visualization settings.
  */
 const store = usePlannerContext();
+
+function selectValueFromEvent(event: Event): string {
+  return event.target instanceof HTMLSelectElement ? event.target.value : "";
+}
 </script>
 
 <template>
@@ -20,7 +24,7 @@ const store = usePlannerContext();
         <span>Preset Board</span>
         <select
           :value="store.state.selectedBoardId"
-          @change="store.selectBoard($event.target.value)"
+          @change="store.selectBoard(selectValueFromEvent($event))"
         >
           <option
             v-for="boardOption in store.boardOptions"
@@ -31,7 +35,11 @@ const store = usePlannerContext();
           </option>
         </select>
       </label>
-      <button class="ghost-button board-add-button" type="button" @click="store.addBoardInstance()">
+      <button
+        class="ghost-button board-add-button"
+        type="button"
+        @click="store.addBoardInstance()"
+      >
         Add Board
       </button>
     </div>
@@ -114,7 +122,7 @@ const store = usePlannerContext();
 }
 
 .instance-row {
-  border: 1px solid rgba(147, 197, 253, 0.18);
+  border: 1px solid var(--line-control);
   border-radius: 12px;
   padding: 10px;
   display: grid;
@@ -125,7 +133,7 @@ const store = usePlannerContext();
 }
 
 .instance-row.selected {
-  border-color: rgba(217, 255, 112, 0.72);
+  border-color: var(--accent-border-strong);
 }
 
 .instance-title {

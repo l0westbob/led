@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { buildLedComparisonSnapshot } from "../src/application/ledLab/buildLedComparisonSnapshot.js";
+import { buildLedComparisonSnapshot } from "../src/application/ledLab/buildLedComparisonSnapshot";
 
 test("buildLedComparisonSnapshot supports multiple LEDs in relative mode", () => {
   const snapshot = buildLedComparisonSnapshot({
@@ -28,8 +28,15 @@ test("buildLedComparisonSnapshot hides mccree/din in photon mode", () => {
   });
 
   assert.equal(snapshot.mode, "photon");
-  assert.ok(snapshot.chartData.series.every((series) => !["mccree", "din"].includes(series.id)));
-  assert.equal(typeof snapshot.seriesPath(snapshot.chartData.series[0].y), "string");
+  assert.ok(
+    snapshot.chartData.series.every(
+      (series) => !["mccree", "din"].includes(series.id),
+    ),
+  );
+  assert.equal(
+    typeof snapshot.seriesPath(snapshot.chartData.series[0].y),
+    "string",
+  );
 });
 
 test("buildLedComparisonSnapshot handles empty compared rows safely", () => {

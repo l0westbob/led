@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap");
 @import "@/styles/theme.css";
 
 * {
@@ -27,7 +26,7 @@ body {
     ),
     linear-gradient(180deg, #0a1119 0%, #101823 100%);
   color: var(--text);
-  font-family: "Space Grotesk", sans-serif;
+  font-family: var(--font-sans);
 }
 
 button,
@@ -87,7 +86,7 @@ select {
 
 .eyebrow,
 .mono {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--font-mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--accent-strong);
@@ -100,6 +99,7 @@ select {
 
 .card,
 .hero-card {
+  min-width: 0;
   border: 1px solid var(--line);
   border-radius: 24px;
   background: var(--bg-soft);
@@ -172,7 +172,7 @@ select {
 
 select option {
   color: var(--text) !important;
-  background: #0f1720 !important;
+  background: var(--bg) !important;
 }
 
 input,
@@ -210,7 +210,7 @@ select:focus,
     rgba(119, 224, 160, 0.18),
     rgba(217, 255, 112, 0.1)
   );
-  border-color: rgba(217, 255, 112, 0.45);
+  border-color: var(--accent-border);
 }
 
 .stats-grid {
@@ -224,7 +224,7 @@ select:focus,
   padding: 14px;
   border-radius: 18px;
   background: rgba(9, 14, 24, 0.78);
-  border: 1px solid rgba(147, 197, 253, 0.12);
+  border: 1px solid var(--line-panel);
 }
 
 .dli-table__header {
@@ -248,7 +248,7 @@ select:focus,
   padding: 10px 12px;
   border-radius: 14px;
   background: rgba(8, 14, 25, 0.7);
-  border: 1px solid rgba(147, 197, 253, 0.1);
+  border: 1px solid var(--line-subtle);
 }
 
 .dli-table__label {
@@ -264,8 +264,8 @@ select:focus,
 .stat {
   padding: 14px;
   border-radius: 18px;
-  background: rgba(9, 14, 24, 0.9);
-  border: 1px solid rgba(147, 197, 253, 0.12);
+  background: var(--panel-bg-strong);
+  border: 1px solid var(--line-panel);
 }
 
 .stat-label {
@@ -295,17 +295,17 @@ select:focus,
 .benchmark-table {
   width: 100%;
   border-collapse: collapse;
-  border: 1px solid rgba(147, 197, 253, 0.16);
+  border: 1px solid var(--line);
   border-radius: 14px;
   overflow: hidden;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--font-mono);
   font-size: 0.86rem;
 }
 
 .benchmark-table th,
 .benchmark-table td {
   padding: 10px 12px;
-  border-bottom: 1px solid rgba(147, 197, 253, 0.12);
+  border-bottom: 1px solid var(--line-panel);
   text-align: left;
 }
 
@@ -329,7 +329,7 @@ select:focus,
     rgba(8, 12, 21, 0.95),
     rgba(17, 24, 39, 0.95)
   );
-  border: 1px solid rgba(147, 197, 253, 0.08);
+  border: 1px solid var(--line-faint);
 }
 
 .collapsible-card {
@@ -451,5 +451,17 @@ select:focus,
   .collapsible-summary .mono {
     grid-column: 1 / -1;
     justify-self: start;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .top-switch-row > .ghost-button {
+    width: 100%;
+  }
+
+  .dli-table__header,
+  .dli-table__row {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }

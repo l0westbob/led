@@ -1,0 +1,40 @@
+{
+  "planner": {
+    "scenario": "single-board-120x120-2cm",
+    "summary": {
+      "average": 129.76,
+      "min": 48.18,
+      "max": 277.75,
+      "inputPower": 70.675553,
+      "boardPhotonFlux": 212.238686,
+      "gridWidth": 60,
+      "gridDepth": 60,
+      "sourceCount": 308,
+      "fixtureCount": 1
+    }
+  },
+  "boardPreview": {
+    "scenario": "2x2-emitter-preview",
+    "summary": {
+      "emitters": 4,
+      "totalPhotonFlux": 1.944474,
+      "boardVoltageV": 5.5,
+      "boardCurrentA": 0.116,
+      "inputPowerW": 0.638,
+      "cctK": 5000
+    }
+  },
+  "ledLab": {
+    "scenario": "lm301h-cri80-5000k-relative",
+    "summary": {
+      "led": "lm301h_cri80_5000k",
+      "dataset": "LM301H-80CRI-5000K",
+      "points1nm": 401,
+      "points5nm": 81,
+      "mccreeRatio": 0.681878,
+      "dinRatio": 0.642329,
+      "parRatio": 0.98323,
+      "pbarRatio": 1
+    }
+  }
+}

@@ -1,11 +1,11 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from "vue";
 import StatCard from "@/components/StatCard.vue";
 import { usePlannerContext } from "@/stores/plannerContext";
 
 const store = usePlannerContext();
 
-function toDliMol(ppfdUmolM2S, hoursPerDay) {
+function toDliMol(ppfdUmolM2S: number, hoursPerDay: number): number {
   const ppfd = Number(ppfdUmolM2S) || 0;
   const hours = Math.max(0, Number(hoursPerDay) || 0);
   // DLI (mol/m^2/day) = PPFD (umol/m^2/s) * 3600s/h * h/day / 1e6 umol/mol
@@ -41,7 +41,9 @@ const dliRows = computed(() => {
     <div class="dli-table" aria-label="Daily Light Integral">
       <div class="dli-table__header">
         <span class="stat-label">DLI (mol/m²/day)</span>
-        <span class="mono">{{ Number(store.form.photoperiodHours || 0) }} h</span>
+        <span class="mono"
+          >{{ Number(store.form.photoperiodHours || 0) }} h</span
+        >
       </div>
       <div class="dli-table__grid dli-table__grid--single-row">
         <div v-for="row in dliRows" :key="row.label" class="dli-table__row">

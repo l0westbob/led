@@ -1,132 +1,98 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from "vue";
+import NumericField from "@/components/controls/NumericField.vue";
+import SegmentedControl from "@/components/controls/SegmentedControl.vue";
+import PlannerModalFrame from "@/components/modals/PlannerModalFrame.vue";
 import { usePlannerContext } from "@/stores/plannerContext";
 
 const store = usePlannerContext();
 const draft = computed(() => store.boardConfigModal.draft);
+const driveModeOptions = [
+  { value: "constantVoltage", label: "Constant Voltage" },
+  { value: "constantCurrent", label: "Constant Current" },
+];
 </script>
 
 <template>
-  <div v-if="store.boardConfigModal.isOpen && draft" class="modal-backdrop">
-    <div class="modal-card">
-      <div class="section-header">
-        <h2>Board Drive Config</h2>
-      </div>
+  <PlannerModalFrame
+    v-if="store.boardConfigModal.isOpen && draft"
+    :open="store.boardConfigModal.isOpen"
+    title="Board Drive Config"
+    label-id="board-drive-config-title"
+    @close="store.closeBoardConfig()"
+  >
+    <SegmentedControl
+      label="Driver Mode"
+      aria-label="Driver Mode"
+      group-class="pill-row"
+      button-class="pill"
+      :options="driveModeOptions"
+      :model-value="draft.driveMode"
+      @change="store.setBoardConfigMode"
+    />
 
-      <label class="field">
-        <span>Driver Mode</span>
-        <div class="pill-row">
-          <button
-            class="pill"
-            :class="{ active: draft.driveMode === 'constantVoltage' }"
-            type="button"
-            @click="store.setBoardConfigMode('constantVoltage')"
-          >
-            Constant Voltage
-          </button>
-          <button
-            class="pill"
-            :class="{ active: draft.driveMode === 'constantCurrent' }"
-            type="button"
-            @click="store.setBoardConfigMode('constantCurrent')"
-          >
-            Constant Current
-          </button>
-        </div>
-      </label>
-
-      <div class="field-grid three-columns">
-        <label class="field">
-          <span>Voltage (V)</span>
-          <input
-            :value="draft.voltageV"
-            type="number"
-            min="0"
-            step="0.1"
-            @input="store.updateBoardConfigDraft('voltageV', Number($event.target.value))"
-          />
-        </label>
-        <label class="field">
-          <span>Current (A)</span>
-          <input
-            :value="draft.currentA"
-            type="number"
-            min="0"
-            step="0.01"
-            @input="store.updateBoardConfigDraft('currentA', Number($event.target.value))"
-          />
-        </label>
-        <label class="field">
-          <span>Board Temp (°C)</span>
-          <input
-            :value="draft.temperatureC"
-            type="number"
-            min="-20"
-            step="0.5"
-            @input="store.updateBoardConfigDraft('temperatureC', Number($event.target.value))"
-          />
-        </label>
-      </div>
-
-      <div class="field-grid two-columns">
-        <label class="field">
-          <span>Series LEDs per String</span>
-          <input
-            :value="draft.seriesCount"
-            type="number"
-            min="0"
-            step="1"
-            @input="store.updateBoardConfigDraft('seriesCount', Number($event.target.value))"
-          />
-        </label>
-        <label class="field">
-          <span>Parallel Strings</span>
-          <input
-            :value="draft.parallelCount"
-            type="number"
-            min="0"
-            step="1"
-            @input="store.updateBoardConfigDraft('parallelCount', Number($event.target.value))"
-          />
-        </label>
-      </div>
-
-      <div class="modal-actions">
-        <button class="ghost-button" type="button" @click="store.closeBoardConfig()">
-          Cancel
-        </button>
-        <button class="ghost-button" type="button" @click="store.saveBoardConfig()">
-          Save
-        </button>
-      </div>
+    <div class="field-grid three-columns">
+      <NumericField
+        label="Voltage (V)"
+        :model-value="draft.voltageV"
+        min="0"
+        step="0.1"
+        @input-value="store.updateBoardConfigDraft('voltageV', Number($event))"
+      />
+      <NumericField
+        label="Current (A)"
+        :model-value="draft.currentA"
+        min="0"
+        step="0.01"
+        @input-value="store.updateBoardConfigDraft('currentA', Number($event))"
+      />
+      <NumericField
+        label="Board Temp (°C)"
+        :model-value="draft.temperatureC"
+        min="-20"
+        step="0.5"
+        @input-value="
+          store.updateBoardConfigDraft('temperatureC', Number($event))
+        "
+      />
     </div>
-  </div>
+
+    <div class="field-grid two-columns">
+      <NumericField
+        label="Series LEDs per String"
+        :model-value="draft.seriesCount"
+        min="0"
+        step="1"
+        @input-value="
+          store.updateBoardConfigDraft('seriesCount', Number($event))
+        "
+      />
+      <NumericField
+        label="Parallel Strings"
+        :model-value="draft.parallelCount"
+        min="0"
+        step="1"
+        @input-value="
+          store.updateBoardConfigDraft('parallelCount', Number($event))
+        "
+      />
+    </div>
+
+    <div class="modal-actions">
+      <button
+        class="ghost-button"
+        type="button"
+        @click="store.closeBoardConfig()"
+      >
+        Cancel
+      </button>
+      <button
+        class="ghost-button"
+        type="button"
+        @click="store.saveBoardConfig()"
+      >
+        Save
+      </button>
+    </div>
+  </PlannerModalFrame>
 </template>
-
-<style scoped>
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background: rgba(5, 10, 18, 0.56);
-  backdrop-filter: blur(8px);
-  z-index: 1200;
-  padding: 20px;
-}
-
-.modal-card {
-  width: min(760px, 100%);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: rgba(9, 16, 28, 0.96);
-  padding: 16px;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 8px;
-}
-</style>
