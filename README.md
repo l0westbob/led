@@ -2,6 +2,11 @@
 
 Vue 3 + Vite app for configuring LED boards, estimating calibrated photon output, and previewing PPFD maps.
 
+## Hosted app
+
+The current `main` branch is deployed with GitHub Pages at
+[https://l0westbob.github.io/led/](https://l0westbob.github.io/led/).
+
 ## Architecture (current state)
 
 The app now follows a layered structure:
